@@ -31,7 +31,7 @@ function setup() {
 
   let x_pos = 2*pad_y;
   gauge_sel = createSelect();
-  gauge_sel.position(x_pos,pad_y/2);
+  gauge_sel.position(x_pos,pad_y);
   gauge_sel.option('1');
   gauge_sel.option('1/2');
   gauge_sel.option('1/3');
@@ -40,23 +40,23 @@ function setup() {
   x_pos += 50;
 
   grid_button = createButton('Make grid');
-  grid_button.position(x_pos, pad_y/2);
+  grid_button.position(x_pos, pad_y);
   grid_button.mousePressed(makeGrid);
   x_pos += 120;
 
   let input_w = 150;
   filename_input = createInput(filename);
-  filename_input.position(x_pos, pad_y/2);
+  filename_input.position(x_pos, pad_y);
   filename_input.size(input_w);
   filename_input.input(updateFilename);
   x_pos += input_w + 10;
 
   save_button = createButton('Save grid');
-  save_button.position(x_pos, pad_y/2);
+  save_button.position(x_pos, pad_y);
   save_button.mousePressed(saveGrid);
   x_pos += 80;
 
-  makeGrid();
+  makeGrid(pad_x, 1.5*pad_y);
 }
 
 
@@ -67,7 +67,8 @@ function draw() {
   let x_pos = pad_y;
   textAlign(LEFT, TOP);
   fill(0);
-  text("Gauge:", x_pos, pad_y/2);
+  text("press p for purl (black) and k for knit (white)", x_pos, pad_y*.5);
+  text("Gauge:", x_pos, pad_y);
 
   drawGrid();
 }
@@ -101,15 +102,17 @@ function indexGrid(row, col) {
   return row*num_cols + col;
 }
 
-function makeGrid() {
+function makeGrid(_x, _y) {
+  let start_x = _x || pad_x;
+  let start_y = _y || pad_y;
   for (let row=0; row<num_rows; row++) {
     for (let col=0; col<num_cols; col++) {
       // this cell is on a needle if it falls into the gauge
       let on_needle = false;
       if (col % gauge == 0) { on_needle = true; }
 
-      let x0 = col*cell_w + pad_x;
-      let y0 = row*cell_h + pad_y;
+      let x0 = col*cell_w + start_x;
+      let y0 = row*cell_h + start_y;
       let x1 = x0 + cell_w;
       let y1 = y0 + cell_h;
       let myCell = new KnitCell(on_needle, row, col, x0, y0, x1, y1);
